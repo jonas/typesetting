@@ -59,6 +59,7 @@ class SettingSpec extends org.specs2.mutable.Specification {
   val StringListSetting = Setting[Seq[String]]("string-list-setting")
   val MemorySizeSetting = Setting[Setting.MemorySize]("memory-size-setting")
   val DurationSetting = Setting[Duration]("duration-setting")
+  val FiniteDurationSetting = Setting[FiniteDuration]("duration-setting")
 
   val FailureIntSetting = Setting[Try[Int]]("failure-int-setting")
   val SuccessIntSetting = Setting[Try[Int]]("int-setting")
@@ -73,8 +74,9 @@ class SettingSpec extends org.specs2.mutable.Specification {
     BooleanSetting & IntSetting & LongSetting &
       NumberSetting & DoubleSetting & DoubleListSetting &
       StringSetting & StringListSetting & MemorySizeSetting &
-      DurationSetting & FailureIntSetting & SuccessIntSetting &
-      NoneStringSetting & SomeStringSetting & CustomSetting
+      DurationSetting & FiniteDurationSetting & CustomSetting &
+      FailureIntSetting & SuccessIntSetting & NoneStringSetting &
+      SomeStringSetting
 
   "Setting" >> {
     "singletons" >> {
@@ -88,6 +90,7 @@ class SettingSpec extends org.specs2.mutable.Specification {
       StringListSetting.parse(config) must_== Seq("hello", "world")
       MemorySizeSetting.parse(config) must_== Setting.MemorySize(1024)
       DurationSetting.parse(config) must_== 2.minutes
+      FiniteDurationSetting.parse(config) must_== 2.minutes
       FailureIntSetting.parse(config) must haveClass[Failure[ConfigException.WrongType]]
       SuccessIntSetting.parse(config) must_== Success(42)
       NoneStringSetting.parse(config) must_== None
@@ -110,6 +113,7 @@ class SettingSpec extends org.specs2.mutable.Specification {
       settings(StringListSetting) must_== Seq("hello", "world")
       settings(MemorySizeSetting) must_== Setting.MemorySize(1024)
       settings(DurationSetting) must_== 2.minutes
+      settings(FiniteDurationSetting) must_== 2.minutes
       settings(FailureIntSetting) must haveClass[Failure[ConfigException.WrongType]]
       settings(SuccessIntSetting) must_== Success(42)
       settings(NoneStringSetting) must_== None

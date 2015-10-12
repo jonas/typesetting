@@ -20,7 +20,7 @@ package io.github.jonas.typesetting
 import com.typesafe.config.{ ConfigFactory, Config }
 
 import scala.util.Try
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.collection.JavaConversions._
 import scala.annotation.implicitNotFound
 
@@ -219,6 +219,8 @@ object Setting {
     implicit val stringExtractor = Extractor[String](_.getString)
     implicit val stringSeqExtractor = Extractor[Seq[String]](_.getStringList)
     implicit val durationExtractor = stringExtractor.map(Duration.apply)
+    implicit val finiteDurationExtractor =
+      durationExtractor.map(d => FiniteDuration(d.length, d.unit))
 
     implicit def tryExtractor[T](implicit f: Extractor[T]) =
       Extractor[Try[T]](config => path => Try(f(config, path)))
